@@ -1,46 +1,47 @@
 // Javascript quick sort implementation
 // uses Sedgewick's advice on pivot selection
 
-// quick sort performs poorly with a lot of repeating elements
-var listsOfLists = [
-[],
-[1],
-[2,1],
-[1,2],
-[1,2,3],
-[2,1,3],
-[4,3,2,1],
-[1,2,3,4],
-[4,4,4,4],
-[4,2,4,2],
-[4,2,1,5,6,3,10,100,11,23,14]
-];
-for(var i=0; i<listsOfLists.length; i++){
-  console.log(quickSort(listsOfLists[i]))
-}
+// var listsOfLists = [
+// [],
+// [1],
+// [2,1],
+// [1,2],
+// [1,2,3],
+// [2,1,3],
+// [4,3,2,1],
+// [1,2,3,4],
+// [4,4,4,4],
+// [4,2,4,2],
+// [4,2,1,5,6,3,10,100,11,23,14]
+// ];
+// for(var i=0; i<listsOfLists.length; i++){
+//   console.log(quickSort(listsOfLists[i]))
+// }
 
 function quickSort(list, comparator){
   if (list.constructor !== Array){ return list; }
+  if (list.length === 0){ return list; }
 
   comparator = comparator || defaultNumericalComparator;
-  // var pivot = medianOfThree(list, comparator);
-  // var pivotIndex, pivotValue;
-
-  // if (pivot === "first") {
-  //   pivotIndex = 0;
-  // }
-  
-  // if (pivot === "middle") {
-  //   pivotIndex = Math.floor(list.length/2);
-  // }
-  
-  // if (pivot === "last") {
-  //   pivotIndex = list.length-1;
-  //   pivotValue = list[pivotIndex];
-  // }
 
   function recurse(first, last){
     var prevLast = last;
+    var pivot;
+
+    var pivotChoice = medianOfThree([list[first], list[Math.floor((last-first)/2)+first], list[last]], comparator);
+    if (pivotChoice === "first") {
+      pivot = first;
+    }
+    if (pivotChoice === "middle") {
+      pivot = Math.floor((last-first)/2)+first;
+    }
+    if (pivotChoice === "last") {
+      pivot = last;
+    }
+    var tempValue = list[pivot];
+    list[pivot] = list[last];
+    list[last] = tempValue;
+
     for(var i=first; i<last; i++){
       if (comparator(list[i], list[last]) > 0) {
         var temp = list[i];
@@ -86,7 +87,7 @@ function medianOfThree(list, comparator){
   for(var i=1; i<array.length; i++){
     for(var j=i-1; j>-1; j--){
       if (comparator(array[i].val, array[j].val) > 0) {
-        console.log("i",i,"j",j);
+        // console.log("i",i,"j",j);
         var temp = array[j];
         array[j] = array[i];
         array[i] = temp;
