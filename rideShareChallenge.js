@@ -12,13 +12,26 @@ function turn(vehicles,peoples,buildings){
       }
     }
     if (vehicles[i].peoples.length > 0) {
-      var building = vehicles[i].peoples[0].destination;
-      for(var j=0; j<buildings.length; j++){
-        if (building === buildings[j].name) {
-          building = buildings[j];
+
+      // pick a location based off ppl
+      // currentDestination = loc
+      var currentDestination = null;
+      var currentDestinationDist = Number.POSITIVE_INFINITY;
+      for(var j=0; j<vehicles[i].peoples.length; j++){
+        var buildingName = vehicles[i].peoples[j].destination;
+        for(var k=0; k<buildings.length; k++){
+          if (buildingName === buildings[k].name) {
+            var dist = getDist(vehicles[i], buildings[k]);
+            if (dist < currentDestinationDist) {
+              currentDestinationDist = dist;
+              currentDestination = buildings[k];
+            }
+          }
         }
       }
-      vehicles[i].moveTo(building);
+      // go to location
+      vehicles[i].moveTo(currentDestination);
+
     }
   }
 };
