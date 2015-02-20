@@ -59,40 +59,36 @@ BinaryTreeNode.prototype.insert = function(x) {
   }
 };
 BinaryTreeNode.prototype.remove = function(x) {
-  var flag = true;
-  var recurse = function(node){
-    if (node.isEmpty()) {
-      flag = false;
+  if (arguments[1] !== "checked" && !this.contains(x)) {
+    return this;
+  }
+  if (this.value === x) {
+    if (this.left.isEmpty() && this.right.isEmpty()) {
       return new EmptyBinaryTree;
     }
-    if (node.value === x) {
-      if (node.left.isEmpty() && node.right.isEmpty()) {
-        return new EmptyBinaryTree;
-      }
-      if (node.right.isEmpty() && !node.left.isEmpty()) {
-        return node.left;
-      }
-      if (node.left.isEmpty() && !node.right.isEmpty()) {
-        return node.right;
-      }
-      if (node.left.depth() < node.right.depth() ) {
-        return findDirectionMost(node.left, "right", node);
-      }
-      else {
-        return findDirectionMost(node.right, "left", node);
-      }
+    if (this.right.isEmpty() && !this.left.isEmpty()) {
+      return this.left;
     }
-    if (node.value > x) {
-      return new BinaryTreeNode(node.value, recurse(node.left), node.right);
+    if (this.left.isEmpty() && !this.right.isEmpty()) {
+      return this.right;
     }
-    if (node.value < x) {
-      return new BinaryTreeNode(node.value, node.left, recurse(node.right));
+    if (this.left.depth() < this.right.depth() ) {
+      return removeNodeWithChildren(this.left, "right", this);
     }
-  };
-  var newTree = recurse(this);
-  return flag ? newTree : this;
+    else {
+      return removeNodeWithChildren(this.right, "left", this);
+    }
+  }
 
-  function findDirectionMost(node, direction, nodeToAttach){
+  if (this.value > x) {
+    return new BinaryTreeNode(this.value, this.left.remove(x, "checked"), this.right);
+  }
+
+  if (this.value < x) {
+    return new BinaryTreeNode(this.value, this.left, this.right.remove(x, "checked"));
+  }
+
+  function removeNodeWithChildren(node, direction, nodeToAttach){
     if (node[direction].isEmpty()) {
       if (direction === "right") {
         return new BinaryTreeNode(node.value, nodeToAttach.left.remove(node.value), nodeToAttach.right);
@@ -101,7 +97,7 @@ BinaryTreeNode.prototype.remove = function(x) {
         return new BinaryTreeNode(node.value, nodeToAttach.left, nodeToAttach.right.remove(node.value));
       }
     }
-    return findDirectionMost(node[direction], direction, nodeToAttach);
+    return removeNodeWithChildren(node[direction], direction, nodeToAttach);
   };
 };
 
