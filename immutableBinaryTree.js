@@ -9,13 +9,11 @@ function BinaryTreeNode(value, left, right) {
 BinaryTreeNode.prototype = new BinaryTree();
 BinaryTreeNode.prototype.constructor = BinaryTreeNode;
 
-BinaryTreeNode.prototype.isEmpty = function() {
-  return false;
-};
+BinaryTreeNode.prototype.isEmpty = function() { return false; };
 BinaryTreeNode.prototype.depth = function() {
   var maxDepth = 1;
-  var recurse function(node, depth){
-    if (node.isEmpty) {
+  var recurse = function(node, depth){
+    if (node.isEmpty()) {
       if (maxDepth < depth) maxDepth = depth;
       return;
     }
@@ -25,9 +23,28 @@ BinaryTreeNode.prototype.depth = function() {
   recurse(this, 0);
   return maxDepth;
 };
-BinaryTreeNode.prototype.count = function() { /* implement this */ };
+BinaryTreeNode.prototype.count = function() {
+  var count = 0;
+  var recurse = function(node){
+    if (node.isEmpty()) {
+      return 0;
+    }
+    return 1+recurse(node.left)+recurse(node.right);
+  };
+  return recurse(this);
+};
 
-BinaryTreeNode.prototype.inorder = function(fn) { /* implement this */ };
+BinaryTreeNode.prototype.inorder = function(fn) {
+  var recurse = function(node){
+    if (node.isEmpty()) {
+      return;
+    }
+    recurse(node.left);
+    fn(node.value);
+    recurse(node.right);
+  };
+  recurse(this);
+};
 BinaryTreeNode.prototype.preorder = function(fn) { /* implement this */ };
 BinaryTreeNode.prototype.postorder = function(fn) { /* implement this */ };
 
@@ -40,13 +57,11 @@ function EmptyBinaryTree() { Object.freeze(this); }
 EmptyBinaryTree.prototype = new BinaryTree();
 EmptyBinaryTree.prototype.constructor = EmptyBinaryTree;
 
-EmptyBinaryTree.prototype.isEmpty = function() {
-  return true;
-};
-EmptyBinaryTree.prototype.depth = function() { /* implement this */ };
-EmptyBinaryTree.prototype.count = function() { /* implement this */ };
+EmptyBinaryTree.prototype.isEmpty = function() { return true; };
+EmptyBinaryTree.prototype.depth = function() { return 0; };
+EmptyBinaryTree.prototype.count = function() { return 0; };
 
-EmptyBinaryTree.prototype.inorder = function(fn) { /* implement this */ };
+EmptyBinaryTree.prototype.inorder = function(fn) { return; };
 EmptyBinaryTree.prototype.preorder = function(fn) { /* implement this */ };
 EmptyBinaryTree.prototype.postorder = function(fn) { /* implement this */ };
 
