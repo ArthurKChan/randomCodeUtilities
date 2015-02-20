@@ -11,93 +11,52 @@ BinaryTreeNode.prototype.constructor = BinaryTreeNode;
 
 BinaryTreeNode.prototype.isEmpty = function() { return false; };
 BinaryTreeNode.prototype.depth = function() {
-  var maxDepth = 1;
-  var recurse = function(node, depth){
-    if (node.isEmpty()) {
-      if (maxDepth < depth) maxDepth = depth;
-      return;
-    }
-    recurse(node.left, depth+1);
-    recurse(node.right, depth+1);
-  };
-  recurse(this, 0);
-  return maxDepth;
+  var leftDepth = this.left.depth() + 1;
+  var rightDepth = this.right.depth() + 1;
+  return leftDepth > rightDepth ? leftDepth : rightDepth;
 };
 BinaryTreeNode.prototype.count = function() {
-  var count = 0;
-  var recurse = function(node){
-    if (node.isEmpty()) {
-      return 0;
-    }
-    return 1+recurse(node.left)+recurse(node.right);
-  };
-  return recurse(this);
+  return 1+this.left.count()+this.right.count();
 };
 
 BinaryTreeNode.prototype.inorder = function(fn) {
-  var recurse = function(node){
-    if (node.isEmpty()) {
-      return;
-    }
-    recurse(node.left);
-    fn(node.value);
-    recurse(node.right);
-  };
-  recurse(this);
+  this.left.inorder(fn);
+  fn(this.value);
+  this.right.inorder(fn);
 };
 BinaryTreeNode.prototype.preorder = function(fn) {
-  var recurse = function(node){
-    if (node.isEmpty()) {
-      return;
-    }
-    fn(node.value);
-    recurse(node.left);
-    recurse(node.right);
-  };
-  recurse(this);
+  fn(this.value);
+  this.left.preorder(fn);
+  this.right.preorder(fn);
 };
 BinaryTreeNode.prototype.postorder = function(fn) {
-  var recurse = function(node){
-    if (node.isEmpty()) {
-      return;
-    }
-    recurse(node.left);
-    recurse(node.right);
-    fn(node.value);
-  };
-  recurse(this);
+  this.left.postorder(fn);
+  this.right.postorder(fn);
+  fn(this.value);
 };
 
 BinaryTreeNode.prototype.contains = function(x) {
-  var recurse = function(node){
-    if (node.isEmpty()) {
-      return false;
+  if (this.value === x) {
+    return true;
+  }
+  if (this.value > x) {
+    if (this.left) {
+      return this.left.contains(x);
     }
-    if (node.value === x) {
-      return true;
+  }
+  if (this.value < x) {
+    if (this.right) {
+      return this.right.contains(x);
     }
-    if (node.value > x) {
-      return recurse(node.left);
-    }
-    if (node.value < x) {
-      return recurse(node.right);
-    }
-  };
-  return recurse(this);
+  }
 };
 BinaryTreeNode.prototype.insert = function(x) {
-  var recurse = function(node){
-    if (node.isEmpty()) {
-      return new BinaryTreeNode(x, new EmptyBinaryTree, new EmptyBinaryTree);
-    }
-    if (node.value >= x) {
-      return new BinaryTreeNode(node.value, recurse(node.left), node.right);
-    }
-    if (node.value < x) {
-      return new BinaryTreeNode(node.value, node.left, recurse(node.right));
-    }
-  };
-  return recurse(this);
+  if (this.value >= x) {
+    return new BinaryTreeNode(this.value, this.left.insert(x), this.right);
+  }
+  if (this.value < x) {
+    return new BinaryTreeNode(this.value, this.left, this.right.insert(x));
+  }
 };
 BinaryTreeNode.prototype.remove = function(x) {
   var flag = true;
