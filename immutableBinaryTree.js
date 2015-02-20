@@ -85,8 +85,66 @@ BinaryTreeNode.prototype.contains = function(x) {
   };
   return recurse(this);
 };
-BinaryTreeNode.prototype.insert = function(x) { /* implement this */ };
-BinaryTreeNode.prototype.remove = function(x) { /* implement this */ };
+BinaryTreeNode.prototype.insert = function(x) {
+  var recurse = function(node){
+    if (node.isEmpty()) {
+      return new BinaryTreeNode(x, new EmptyBinaryTree, new EmptyBinaryTree);
+    }
+    if (node.value >= x) {
+      return new BinaryTreeNode(node.value, recurse(node.left), node.right);
+    }
+    if (node.value < x) {
+      return new BinaryTreeNode(node.value, node.left, recurse(node.right));
+    }
+  };
+  return recurse(this);
+};
+BinaryTreeNode.prototype.remove = function(x) {
+  var flag = true;
+  var recurse = function(node){
+    if (node.isEmpty()) {
+      flag = false;
+      return new EmptyBinaryTree;
+    }
+    if (node.value === x) {
+      if (node.left.isEmpty() && node.right.isEmpty()) {
+        return new EmptyBinaryTree;
+      }
+      if (node.right.isEmpty() && !node.left.isEmpty()) {
+        return node.left;
+      }
+      if (node.left.isEmpty() && !node.right.isEmpty()) {
+        return node.right;
+      }
+      if (node.left.depth() < node.right.depth() ) {
+        return findDirectionMost(node.left, "right", node);
+      }
+      else {
+        return findDirectionMost(node.right, "left", node);
+      }
+    }
+    if (node.value > x) {
+      return new BinaryTreeNode(node.value, recurse(node.left), node.right);
+    }
+    if (node.value < x) {
+      return new BinaryTreeNode(node.value, node.left, recurse(node.right));
+    }
+  };
+  var newTree = recurse(this);
+  return flag ? newTree : this;
+
+  function findDirectionMost(node, direction, nodeToAttach){
+    if (node[direction].isEmpty()) {
+      if (direction === "right") {
+        return new BinaryTreeNode(node.value, nodeToAttach.left.remove(node.value), nodeToAttach.right);
+      }
+      if (direction === "left") {
+        return new BinaryTreeNode(node.value, nodeToAttach.left, nodeToAttach.right.remove(node.value));
+      }
+    }
+    return findDirectionMost(node[direction], direction, nodeToAttach);
+  };
+};
 
 ////////////////////////////////////////////////////////////////////////
 function EmptyBinaryTree() { Object.freeze(this); }
@@ -102,5 +160,7 @@ EmptyBinaryTree.prototype.preorder = function(fn) { return; };
 EmptyBinaryTree.prototype.postorder = function(fn) { return; };
 
 EmptyBinaryTree.prototype.contains = function(x) { return false; };
-EmptyBinaryTree.prototype.insert = function(x) { /* implement this */ };
-EmptyBinaryTree.prototype.remove = function(x) { /* implement this */ };
+EmptyBinaryTree.prototype.insert = function(x) {
+  return new BinaryTreeNode(x, new EmptyBinaryTree, new EmptyBinaryTree);
+};
+EmptyBinaryTree.prototype.remove = function(x) { return this; };
