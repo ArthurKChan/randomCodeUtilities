@@ -45,8 +45,28 @@ BinaryTreeNode.prototype.inorder = function(fn) {
   };
   recurse(this);
 };
-BinaryTreeNode.prototype.preorder = function(fn) { /* implement this */ };
-BinaryTreeNode.prototype.postorder = function(fn) { /* implement this */ };
+BinaryTreeNode.prototype.preorder = function(fn) {
+  var recurse = function(node){
+    if (node.isEmpty()) {
+      return;
+    }
+    fn(node.value);
+    recurse(node.left);
+    recurse(node.right);
+  };
+  recurse(this);
+};
+BinaryTreeNode.prototype.postorder = function(fn) {
+  var recurse = function(node){
+    if (node.isEmpty()) {
+      return;
+    }
+    recurse(node.left);
+    recurse(node.right);
+    fn(node.value);
+  };
+  recurse(this);
+};
 
 BinaryTreeNode.prototype.contains = function(x) { /* implement this */ };
 BinaryTreeNode.prototype.insert = function(x) { /* implement this */ };
@@ -62,8 +82,8 @@ EmptyBinaryTree.prototype.depth = function() { return 0; };
 EmptyBinaryTree.prototype.count = function() { return 0; };
 
 EmptyBinaryTree.prototype.inorder = function(fn) { return; };
-EmptyBinaryTree.prototype.preorder = function(fn) { /* implement this */ };
-EmptyBinaryTree.prototype.postorder = function(fn) { /* implement this */ };
+EmptyBinaryTree.prototype.preorder = function(fn) { return; };
+EmptyBinaryTree.prototype.postorder = function(fn) { return; };
 
 EmptyBinaryTree.prototype.contains = function(x) { /* implement this */ };
 EmptyBinaryTree.prototype.insert = function(x) { /* implement this */ };
