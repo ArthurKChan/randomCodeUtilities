@@ -68,7 +68,23 @@ BinaryTreeNode.prototype.postorder = function(fn) {
   recurse(this);
 };
 
-BinaryTreeNode.prototype.contains = function(x) { /* implement this */ };
+BinaryTreeNode.prototype.contains = function(x) {
+  var recurse = function(node){
+    if (node.isEmpty()) {
+      return false;
+    }
+    if (node.value === x) {
+      return true;
+    }
+    if (node.value > x) {
+      return recurse(node.left);
+    }
+    if (node.value < x) {
+      return recurse(node.right);
+    }
+  };
+  return recurse(this);
+};
 BinaryTreeNode.prototype.insert = function(x) { /* implement this */ };
 BinaryTreeNode.prototype.remove = function(x) { /* implement this */ };
 
@@ -85,6 +101,6 @@ EmptyBinaryTree.prototype.inorder = function(fn) { return; };
 EmptyBinaryTree.prototype.preorder = function(fn) { return; };
 EmptyBinaryTree.prototype.postorder = function(fn) { return; };
 
-EmptyBinaryTree.prototype.contains = function(x) { /* implement this */ };
+EmptyBinaryTree.prototype.contains = function(x) { return false; };
 EmptyBinaryTree.prototype.insert = function(x) { /* implement this */ };
 EmptyBinaryTree.prototype.remove = function(x) { /* implement this */ };
