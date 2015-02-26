@@ -1,16 +1,19 @@
 // create node
-function Node(value){
+function RedBlackNode(value){
+  if (!value) {
+    // do nothing
+  }
   this.value = value;
   this.color = "red";
   this.children = [null, null];
 };
 // Tree Insertion
-function RedBlackTree(value){
-  if (!value) {
-    
-  }
+RedBlackNode.prototype.insert = function(value){
+
 };
 // Tree Removal
+RedBlackNode.prototype.remove = function(value){
 
+};
 // Tree Tests
 
