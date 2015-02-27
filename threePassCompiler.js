@@ -134,12 +134,34 @@ Compiler.prototype.pass2 = function (ast) {
 };
 
 Compiler.prototype.pass3 = function (ast) {
+  if (ast.op === "imm") {
+    return ["IM "+ast.n];
+  }
+  if (ast.op === "arg") {
+    return ["AR "+ast.n];
+  }
+  var a = this.pass3(ast.a), b = this.pass3(ast.b);
+  if (ast.op === "*") {
+    return b.concat(["PU"]).concat(a).concat(["SW", "PO", "SW", "MU"])
+    // return a.op === "imm" && b.op === "imm" ? {"op":"imm","n": a.n * b.n} : {"op":"*","a":a,"b":b};
+  }
+  if (ast.op === "/") {
+    return b.concat(["PU"]).concat(a).concat(["SW", "PO", "SW", "DI"])
+    // return a.op === "imm" && b.op === "imm" ? {"op":"imm","n": a.n / b.n} : {"op":"/","a":a,"b":b};
+  }
+  if (ast.op === "+") {
+    return b.concat(["PU"]).concat(a).concat(["SW", "PO", "SW", "AD"])
+    // return a.op === "imm" && b.op === "imm" ? {"op":"imm","n": a.n + b.n} : {"op":"+","a":a,"b":b};
+  }
+  if (ast.op === "-") {
+    return b.concat(["PU"]).concat(a).concat(["SW", "PO", "SW", "SU"])
+    // return a.op === "imm" && b.op === "imm" ? {"op":"imm","n": a.n - b.n} : {"op":"-","a":a,"b":b};
+  }
   // return assembly instructions
 };
 
 var c = new Compiler;
 // console.log(JSON.stringify(c.pass1("[ x y z ] ( 2*3*x + 5*y - 3*z ) / (1 + 3 + 2*2)")));
-console.log(JSON.stringify(c.pass2(c.pass1("[ x y z ] ( 2*3*x + 5*y - 3*z ) / (1 + 3 + 2*2)"))));
-
+// console.log(JSON.stringify(c.pass2(c.pass1("[ x y z ] ( 2*3*x + 5*y - 3*z ) / (1 + 3 + 2*2)"))));
+// console.log(JSON.stringify(c.pass3(c.pass2(c.pass1("[ x y z ] ( 2*3*x + 5*y - 3*z ) / (1 + 3 + 2*2)")))));
 // {"op":"/","a":{"op":"-","a":{"op":"+","a":{"op":"*","a":{"op":"imm","n":6},"b":{"op":"arg","n":0}},"b":{"op":"*","a":{"op":"imm","n":5},"b":{"op":"arg","n":1}}},"b":{"op":"*","a":{"op":"imm","n":3},"b":{"op":"arg","n":2}}},"b":{"op":"imm","n":8}}
-
